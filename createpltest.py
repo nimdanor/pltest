@@ -22,3 +22,5 @@ pltest==
 >>> _f(toto) # truc
 True
 ==
+
+{}

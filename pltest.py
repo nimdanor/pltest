@@ -9,7 +9,7 @@ import traceback
 import json
 from doctest import DocTest
 
-import feedback 
+from feedback import TestFeedback, ExampleFeedback,Feedback
 
 
 #debug to be removed
@@ -34,32 +34,6 @@ def printOutput(o):
                     print("echec :\n attendu : \n",x["want"],"optenu:\n",x["got"])
                 else:
                     print("echec:\n",x["got"])
-
-class ExampleFeedback:
-    def __init__(self,success,title,want,got):
-        self.success = success
-        self.title = title
-        self.want = want
-        self.got = got
-        
-    def todic(self):
-        return {"success": self.success, "title": self.title, "got": self.got, "want":self.want}
-
-    def getOutput(self):
-        return self.todic()
-
-
-class TestFeedback:
-    def __init__(self,name):
-        self.name = name
-        self.efeedback = []
-
-    def append(self,efb:ExampleFeedback):
-        self.efeedback.append(efb)
-    
-    def getOutput(self):
-        sucess = all([x.success for x in self.efeedback])
-        return {"title": self.name, "tests":[x.getOutput() for x in self.efeedback], "success": sucess}
 
 class PlExample:
     @classmethod
@@ -106,18 +80,18 @@ class PlExample:
         example.name = name
         example.mode = mode
 
-
+from feedback import SUCCESS,FAILURE,ERROR,EXCEPTION
 
 class Standard(doctest.Example):
 
     def addSucess(self, feedback:TestFeedback,  got):
-        feedback.append(ExampleFeedback(True, self.title,self.want,got))
+        feedback.append(ExampleFeedback(True,SUCCESS, self.title,self.want))
 
     def addFailure(self, feedback:TestFeedback, got):
-        feedback.append(ExampleFeedback(False, self.title,self.want,got))
+        feedback.append(ExampleFeedback(False,FAILURE, self.title,self.want,got))
         
     def addException(self, feedback:TestFeedback, infos):
-        feedback.append(ExampleFeedback(False, "le copain",None,infos))
+        feedback.append(ExampleFeedback(False,EXCEPTION, "le copain",None,infos))
         
 
 class Hidden(Standard):
@@ -177,7 +151,7 @@ class PlRunner(doctest.DocTestRunner):
         self.points = 0
         super().__init__(verbose=True)
         self.pltests = []
-        self.feedback = feedback.Feedback()
+        self.feedback =  Feedback()
     
     def addPltest(self,pltest,name=None, mode= 0):
         if not name:

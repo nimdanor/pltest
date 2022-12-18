@@ -25,7 +25,12 @@ if __name__ == "__main__":
     print(f"grade : {a} feedback:")
 
     print(f.jsonStr(), file=open("result.json","w"))    
-
-    pltest.printOutput(f.getOutput())
+    print("=====================================")
+    xx = f.getOutput()
+    print(xx)
+    print("+++++++++++++++++++++++++++++++++++++")
+    #pltest.printOutput(xx)
     
-    print(f.buildoldfeedback())
+    print(f.buildoldfeedback().render(filename="t.html"))
+    
+    
